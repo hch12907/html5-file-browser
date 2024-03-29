@@ -5,11 +5,20 @@ var app = function(){
                      '/').replace(/\/\//g, '/');
   var IMG_EXTENSIONS = ['bmp', 'gif', 'jpg', 'jpeg', 'jpe', 'png'];
   var IGNORED_ELEMENTS = ['../', 'Name', 'Last modified', 'Size', 'Description',
-                          'Parent Directory'];
+                          'Parent Directory', '.thumbs/'];
   var imgCache = [];
   var prev_img = "";
   var next_img = "";
 
+  function createThumbnail(href, name) {
+    var thumbnail;
+    if (isImage(href + name) && name.split('.').pop().toLowerCase() != "gif") {
+      thumbnail = document.createElement('img');
+      thumbnail.src = (href+name).replace("/files/", "/files/.thumbs/")
+      thumbnail.loading = "lazy"
+    }
+    return thumbnail;
+  }
 
   // create a tile
   function createTile(href, name) {
@@ -24,6 +33,25 @@ var app = function(){
     a.href = href+name;
     a.appendChild(glyphicon);
     a.appendChild(title);
+
+    if (name.endsWith("/")) {
+      $.get(href+name, function(data) {
+        html = $.parseHTML(data);
+        entries = $(html).find("a");
+        matched = "";
+        for (let i=0; i < entries.length; i++) {
+          if (isValidTile(entries[i].getAttribute('href'))) {
+            matched = entries[i].getAttribute('href')
+            break
+          }
+        }
+        var thumbnail = createThumbnail(href+name, matched);
+        if (thumbnail) a.appendChild(thumbnail);
+      });
+    } else {
+      var thumbnail = createThumbnail(href, name);
+      if (thumbnail) a.appendChild(thumbnail);
+    }
     return a;
   }
 
@@ -31,6 +59,9 @@ var app = function(){
   function cacheImage(file) {
     for (var i=0; i<imgCache.length; i++) {
       if (imgCache[i].src == file) return;
+    }
+    if (imgCache.length > 50) {
+      imgCache = imgCache.splice(imgCache.length-50, 50)
     }
     imgCache.push(file);
   }
@@ -172,6 +203,12 @@ var app = function(){
   $('.base-dir-icon').click(function(){
     cd(base_dir);
   });
+  window.addEventListener('hashchange', function () {
+    pointed_dir = (base_dir + location.hash.substring(1) + '/').replace(/\/\//g, '/');
+    if (current_dir != pointed_dir) {
+      cd(pointed_dir)
+    }
+});
 
   cd(current_dir);
 }();

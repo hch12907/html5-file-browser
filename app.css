@@ -17,6 +17,8 @@ a, a:hover {
 
 .browser-view {
   margin-top: 3em;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .browser-view a {
@@ -25,19 +27,26 @@ a, a:hover {
   color: white;
   padding: 1.5em 3em 1.5em 1.5em;
   margin: .5em;
-  min-width: 15em;
-  display: inline-block;
+  width: 15em;
   border-radius: .25em;
 }
 
 .browser-view a span {
   margin-right: .66em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .browser-view a:hover {
   text-decoration: none;
   transition: background-color .25s;
   background: #434354;
+}
+
+.browser-view a img {
+  max-width: 100%;
+  height: auto;
 }
 
 .bg-translucent {
