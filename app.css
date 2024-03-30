@@ -27,7 +27,7 @@ a, a:hover {
   color: white;
   padding: 1.5em;
   margin: .5em;
-  width: 15em;
+  width: 12em;
   border-radius: .25em;
 }
 
@@ -35,16 +35,22 @@ a, a:hover {
   display: flex;
   flex-flow: row nowrap;
   margin-right: auto;
+  width: 95%;
 }
 
 .browser-view a header > .glyphicon {
-  padding: 0 0.5em 0 0.5em
+  padding: 0 0.5em 0 0.5em;
+  margin-left: -0.5em;
+  flex: 0 0;
+  padding-right: 1.5em;
 }
 
 .browser-view a header span {
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
 }
 
 .browser-view a:hover {
@@ -54,8 +60,9 @@ a, a:hover {
 }
 
 .browser-view a img {
-  width: 11.5em;
-  height: 11.5em;
+  width: 9em;
+  height: 9em;
+  padding: 0.2em 0 0.1em 0;
   object-fit: cover;
   margin: auto;
 }
@@ -72,7 +79,7 @@ a, a:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
 .current-dir a {
