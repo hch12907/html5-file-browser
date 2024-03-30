@@ -22,17 +22,22 @@ var app = function(){
 
   // create a tile
   function createTile(href, name) {
+    var header = document.createElement('header');
+
     var glyphicon = document.createElement('span');
-    glyphicon.cassName = "glyphicon glyphicon-file";
+    glyphicon.className = "glyphicon glyphicon-file";
     glyphicon.setAttribute('aria-hidden', 'true');
 
     var title = document.createElement('span');
     title.innerText = decodeURIComponent(name);
 
+    header.appendChild(glyphicon);
+    header.appendChild(title);
+
     var a = document.createElement('a');
     a.href = href+name;
-    a.appendChild(glyphicon);
-    a.appendChild(title);
+
+    a.appendChild(header);
 
     if (name.endsWith("/")) {
       $.get(href+name, function(data) {
@@ -40,7 +45,7 @@ var app = function(){
         entries = $(html).find("a");
         matched = "";
         for (let i=0; i < entries.length; i++) {
-          if (isValidTile(entries[i].getAttribute('href'))) {
+          if (isValidTile(entries[i].getAttribute('href')) && !entries[i].getAttribute('href').endsWith('/')) {
             matched = entries[i].getAttribute('href')
             break
           }
@@ -103,7 +108,18 @@ var app = function(){
       $(".browser-view").html("");
 
       // create tiles
-      $(html).find("a").each(function(i, element){
+      let entries = $(html).find("a");
+      entries.sort((x, y) => {
+        let a = x.getAttribute('href') || "";
+        let b = y.getAttribute('href') || "";
+
+        if (a.endsWith("/") && !b.endsWith("/"))
+          return -1;
+        if (!a.endsWith("/") && b.endsWith("/"))
+          return 1;
+        return a.localeCompare(b, undefined, { 'numeric': true })
+      });
+      entries.each(function(i, element){
         if (isValidTile(element.getAttribute('href'))) {
           $(".browser-view").append(
             createTile(current_dir, element.getAttribute('href')));
@@ -131,26 +147,22 @@ var app = function(){
 
   // show an image preview of the given file
   function showPreview(filepath){
-    $(".bg-translucent").css('display', 'block');
-    $(".file-view-img").css('padding-top', '2em');
-    $(".file-view-img").attr('src', 'loader.gif');
-    $(".file-view-wrapper").css('display', 'block');
+    $(".file-viewer").css('display', 'block');
+    $(".file-view-img-loading").css('display', 'block');
+    $(".file-view-img").fadeOut();
+
     var img = new Image();
     img.src = filepath;
     img.onload = function() {
-      $(".file-view-img").fadeOut(0);
-      $(".file-view-img").css('padding-top', '0');
+      $(".file-view-img-loading").css('display', 'none');
       $(".file-view-img").attr('src', filepath);
       $(".file-view-img").fadeIn();
       var scale_width = 0.8 * $(window).width() / img.width;
       var scale_height = 0.8 * $(window).height() / img.height;
       var imgWidth = img.width * Math.min(scale_width, scale_height);
       var imgHeight = img.height * Math.min(scale_width, scale_height);
-      $(".file-view-wrapper").css('left', ($(document).width() - imgWidth) / 2);
       $(".file-view-wrapper").css('width', imgWidth);
-      $(".file-view-wrapper").css('height', imgHeight);
-      $(".file-view-prev").css('display', 'block');
-      $(".file-view-next").css('display', 'block');
+      $(".file-view-wrapper").css('height', imgHeight); 
     };
     cacheImage(filepath);
 
@@ -175,8 +187,8 @@ var app = function(){
 
   // close the image preview
   function closePreview() {
-    $(".bg-translucent").css('display', 'none');
-    $(".file-view-wrapper").css('display', 'none');
+    $(".file-viewer").css('display', 'none');
+    $(".file-view-img").attr('src', '');
   }
 
   // add various event handlers
