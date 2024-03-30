@@ -25,7 +25,7 @@ var app = function(){
     var header = document.createElement('header');
 
     var glyphicon = document.createElement('span');
-    glyphicon.className = "glyphicon glyphicon-file";
+    glyphicon.className = "glyphicon"
     glyphicon.setAttribute('aria-hidden', 'true');
 
     var title = document.createElement('span');
@@ -40,6 +40,7 @@ var app = function(){
     a.appendChild(header);
 
     if (name.endsWith("/")) {
+      glyphicon.classList.add("glyphicon-folder-open")
       $.get(href+name, function(data) {
         html = $.parseHTML(data);
         entries = $(html).find("a");
@@ -54,6 +55,7 @@ var app = function(){
         if (thumbnail) a.appendChild(thumbnail);
       });
     } else {
+      glyphicon.classList.add("glyphicon-file")
       var thumbnail = createThumbnail(href, name);
       if (thumbnail) a.appendChild(thumbnail);
     }
