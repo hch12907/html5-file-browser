@@ -27,8 +27,15 @@ a, a:hover {
   color: white;
   padding: 1.5em;
   margin: .5em;
-  width: 12em;
+  width: 15em;
   border-radius: .25em;
+}
+
+@media(max-width: 600px) {
+  .browser-view a {
+    margin: .5em auto .5em auto;
+    width: 90%;
+  }
 }
 
 .browser-view a header {
@@ -40,7 +47,6 @@ a, a:hover {
 
 .browser-view a header > .glyphicon {
   padding: 0 0.5em 0 0.5em;
-  margin-left: -0.5em;
   flex: 0 0;
   padding-right: 1.5em;
 }
@@ -60,11 +66,11 @@ a, a:hover {
 }
 
 .browser-view a img {
-  width: 9em;
-  height: 9em;
-  padding: 0.2em 0 0.1em 0;
+  width: 95%;
+  aspect-ratio: 1;
+  padding: 0.5em 0 0.1em 0;
   object-fit: cover;
-  margin: auto;
+  margin: 0 0 0 2.5%;
 }
 
 .browser-view a:not(:has(img)) {
