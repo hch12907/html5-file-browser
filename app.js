@@ -1,6 +1,6 @@
 var app = function(){
-  var base_dir = (location.pathname.replace('/index.html', '/') +
-                  "/files/").replace(/\/\//g, '/');
+  var base_path = location.pathname.replace('/index.html', '/');
+  var base_dir = (base_path + "/files/").replace(/\/\//g, '/');
   var current_dir = (base_dir + location.hash.substring(1) +
                      '/').replace(/\/\//g, '/');
   var IMG_EXTENSIONS = ['bmp', 'gif', 'jpg', 'jpeg', 'jpe', 'png'];
@@ -35,7 +35,11 @@ var app = function(){
     header.appendChild(title);
 
     var a = document.createElement('a');
-    a.href = href+name;
+
+    if (name.endsWith("/"))
+      a.href = base_path + "#/" + name;
+    else
+      a.href = href + name;
 
     a.appendChild(header);
 
@@ -134,7 +138,7 @@ var app = function(){
           // open directories
           $(element).click(function(e) {
             e.preventDefault();
-            cd(element.pathname);
+            cd(element.hash);
           });
         } else if (isImage(element.pathname)) {
           // show image previews
@@ -222,7 +226,7 @@ var app = function(){
     if (current_dir != pointed_dir) {
       cd(pointed_dir)
     }
-});
+  });
 
   cd(current_dir);
 }();
